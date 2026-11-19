@@ -1,29 +1,50 @@
 # Huerto Urbano Virtual
 
-Aplicación web para registrar plantas de un huerto urbano y llevar su historial de riego, crecimiento y plagas.
+Laboratorio 3: Proyecto Creativo — SQLite, GitHub y Vercel.
 
-## Funcionalidades
+Simulador web interactivo para registrar y dar seguimiento al crecimiento de las plantas de un huerto. Permite administrar plantas y guardar eventos importantes, como riegos, crecimiento y aparición de plagas.
 
-- Crear, editar y eliminar plantas.
-- Registrar eventos por planta (riego, crecimiento, plaga) con fecha y nota.
-- Los datos se guardan en el navegador y se mantienen al recargar.
+## Despliegue en vivo
+
+[https://huerto-urbano-indol.vercel.app](https://huerto-urbano-indol.vercel.app)
+
+## Características principales
+
+- Gestión de plantas: crear, consultar, editar y eliminar plantas.
+- Registro de eventos: añadir fechas y notas sobre riegos, crecimiento o plagas para cada planta.
+- Persistencia de datos: utiliza SQLite mediante `sql.js` en el navegador y guarda la base de datos en `localStorage` para conservar los datos al recargar la página.
+- Interfaz responsiva y fácil de usar.
 
 ## Tecnologías
 
-- TypeScript
-- Vite
-- SQLite en el navegador con sql.js
-- Vercel (despliegue)
+- HTML5, CSS3 y TypeScript.
+- Vite.
+- SQLite en el navegador mediante `sql.js`.
+- Vercel para el despliegue.
 
-## Ejecutar localmente
+## Base de datos en Vercel
 
-```bash
-npm install
-npm run dev
-```
+Vercel utiliza un sistema de archivos de solo lectura en producción, por lo que la aplicación no depende de un archivo SQLite tradicional en el servidor. En su lugar, `sql.js` ejecuta SQLite en el navegador y `localStorage` conserva los datos en el dispositivo del usuario.
 
-Luego abre `http://localhost:5173`.
+## Ejecución local
 
-## Despliegue
+1. Clona el repositorio:
 
-https://huerto-urbano-indol.vercel.app
+   ```bash
+   git clone https://github.com/joelortz/huerto-urbano.git
+   ```
+
+2. Entra al directorio e instala las dependencias:
+
+   ```bash
+   cd huerto-urbano
+   npm install
+   ```
+
+3. Inicia el servidor de desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Abre en el navegador la dirección que indique Vite, normalmente `http://localhost:5173`.

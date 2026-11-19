@@ -79,6 +79,18 @@ h3 {
     color: var(--tierra);
 }
 
+.planta-nombre {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.planta-icono {
+    font-family: system-ui, sans-serif;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
 p {
     margin: 0;
 }
@@ -89,8 +101,8 @@ button {
 }
 
 :focus-visible {
-    outline: 3px solid var(--tierra);
-    outline-offset: 3px;
+    outline: 2px solid var(--tierra);
+    outline-offset: 2px;
 }
 
 .saltar {
@@ -130,10 +142,6 @@ button {
         linear-gradient(145deg, rgb(63 110 58 / 24%), transparent 70%);
     transform: translateY(-50%) rotate(-28deg);
     pointer-events: none;
-}
-
-.hero :focus-visible {
-    outline-color: var(--ocre);
 }
 
 .hero__inner {
@@ -276,11 +284,11 @@ main section + section {
 
 main section {
     min-width: 0;
-    padding: clamp(1.25rem, 3vw, 2rem);
-    border: 1px solid rgb(214 220 203 / 85%);
-    border-radius: 1rem;
-    background: rgb(255 255 255 / 78%);
-    box-shadow: 0 12px 32px rgb(43 38 32 / 6%);
+    padding: 1.5rem;
+    border: 1px solid var(--linea);
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 2px 12px rgb(43 38 32 / 6%);
 }
 
 main section h2 {
@@ -296,12 +304,10 @@ main section h2::before {
     flex: 0 0 auto;
     border-radius: 50%;
     background: var(--ocre);
-    box-shadow: 0 0 0 5px rgb(196 134 43 / 13%);
 }
 
 #historial {
     grid-column: 1 / -1;
-    border-left: 3px solid var(--ocre);
 }
 
 .plantas {
@@ -310,20 +316,23 @@ main section h2::before {
     margin: 0;
 }
 
-#lista:empty::after {
+#lista:empty::before {
     content: 'Todavía no agregas plantas. Usa el formulario para empezar tu huerto.';
     display: block;
     padding: 1.25rem;
-    border: 1px dashed #b7c8aa;
-    border-radius: 0.75rem;
-    background: linear-gradient(135deg, #fbfcf8, #f1f5ec);
+    border: 1px dashed var(--linea);
+    border-radius: 8px;
+    background: #fbfcf8;
     color: var(--tenue);
     text-align: center;
 }
 
 #lista-eventos li {
     position: relative;
-    padding-left: 2rem;
+    margin-bottom: 0.5rem;
+    padding: 0.6rem 0.8rem 0.6rem 2rem;
+    border: 1px solid var(--linea);
+    border-radius: 6px;
 }
 
 #lista-eventos li::before {
@@ -338,26 +347,17 @@ main section h2::before {
     transform: translateY(-50%);
 }
 
-.plantas li {
+#lista li {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0.5rem 1rem;
     align-items: center;
+    margin-bottom: 0.75rem;
     padding: 1rem;
     border: 1px solid var(--linea);
-    border-radius: 0.75rem;
+    border-left: 4px solid var(--hoja);
+    border-radius: 8px;
     background: #fbfcf8;
-    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
-}
-
-.plantas li + li {
-    margin-top: 0.75rem;
-}
-
-.plantas li:hover {
-    border-color: #b7c8aa;
-    box-shadow: 0 8px 18px rgb(43 38 32 / 7%);
-    transform: translateY(-2px);
 }
 
 .plantas em {
@@ -380,7 +380,7 @@ main section h2::before {
 .boton-texto {
     background: #ffffff;
     border: 1px solid var(--linea);
-    border-radius: 0.5rem;
+    border-radius: 6px;
     padding: 0.45rem 0.65rem;
     color: var(--hoja);
     font-weight: 700;
@@ -391,7 +391,6 @@ main section h2::before {
 
 .boton-texto:hover {
     background: #edf4e9;
-    border-color: #b7c8aa;
     color: var(--hoja-oscura);
     transform: translateY(-1px);
 }
@@ -404,6 +403,13 @@ main section h2::before {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+}
+
+#form-planta {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--linea);
 }
 
 .campo {
@@ -428,10 +434,11 @@ main section h2::before {
     font: inherit;
     color: inherit;
     background-color: #fbfcf8;
-    border: 1px solid var(--linea);
-    border-radius: 0.65rem;
+    border: 0;
+    border-bottom: 2px solid var(--linea);
+    border-radius: 0;
     padding: 0.75rem 0.85rem;
-    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    transition: border-color 160ms ease, background-color 160ms ease;
 }
 
 .fecha-control {
@@ -476,30 +483,26 @@ main section h2::before {
     cursor: pointer;
 }
 
-.campo input:focus-visible,
-.campo select:focus-visible {
+.campo input:focus,
+.campo select:focus {
     border-color: var(--hoja);
     background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgb(63 110 58 / 13%);
-    outline: none;
 }
 
 .formulario .boton-principal {
     background: var(--hoja);
     color: #ffffff;
     justify-self: start;
-    box-shadow: 0 5px 12px rgb(47 90 44 / 18%);
 }
 
 .formulario .boton-principal:hover {
     background: var(--hoja-oscura);
-    box-shadow: 0 7px 16px rgb(47 90 44 / 24%);
     transform: translateY(-1px);
 }
 
 .boton-principal {
     border-radius: 0.65rem;
-    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    transition: background-color 160ms ease, transform 160ms ease;
 }
 
 footer {
@@ -532,7 +535,7 @@ footer {
 }
 
 @media (max-width: 30rem) {
-    .plantas li {
+    #lista li {
         grid-template-columns: 1fr;
     }
 
@@ -567,7 +570,6 @@ footer {
         transform: none;
     }
 
-    .plantas li:hover,
     .boton-texto:hover,
     .formulario .boton-principal:hover {
         transform: none;
