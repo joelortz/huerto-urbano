@@ -1,4 +1,4 @@
-import { initDB } from './db';
+import { initDB, guardarDB } from './db';
 
 async function main() {
     const db = await initDB();
@@ -22,7 +22,7 @@ function renderLista() {
 const res = db.exec('SELECT id, nombre, especie, fecha_siembra FROM plantas');
 const filas = res[0]?.values ?? [];
 lista.innerHTML = filas
-    .map(([id, nombre, especie, fecha]) => `<li>${nombre} (${especie ?? ''}) - ${fecha}</li>`)
+    .map(([, nombre, especie, fecha]) => `<li>${nombre} (${especie ?? ''}) - ${fecha}</li>`)
     .join('');
 }
 
@@ -32,10 +32,11 @@ form.addEventListener('submit', (e) => {
     db.run(
         'INSERT INTO plantas (nombre, especie, fecha_siembra) VALUES (?, ?, ?)',
         [data.get('nombre') as string, data.get('especie') as string, data.get('fecha_siembra') as string]
-);
-form.reset();
-renderLista();
-});
+    );
+    guardarDB();
+    form.reset();
+    renderLista();
+}); 
 
 renderLista();
 }
