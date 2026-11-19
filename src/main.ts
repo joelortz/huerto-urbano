@@ -1,3 +1,4 @@
+import './style.css';
 import { initDB, guardarDB } from './db';
 import type { SqlValue } from 'sql.js';
 
@@ -6,29 +7,74 @@ async function main() {
     const app = document.querySelector<HTMLDivElement>('#app')!;
 
     app.innerHTML = `
-        <h1>Huerto Urbano Virtual</h1>
-        <form id="form-planta">
-            <input name="nombre" placeholder="Nombre" required />
-            <input name="especie" placeholder="Especie" />
-            <input name="fecha_siembra" type="date" required />
-            <button type="submit">Agregar planta</button>
-            <button type="button" id="cancelar" hidden>Cancelar</button>
-        </form>
-        <ul id="lista"></ul>
-        <section id="historial" hidden>
-            <h2 id="historial-titulo"></h2>
-            <form id="form-evento">
-                <select name="tipo">
-                    <option value="riego">Riego</option>
-                    <option value="crecimiento">Crecimiento</option>
-                    <option value="plaga">Plaga</option>
-                </select>
-                <input name="fecha" type="date" required />
-                <input name="nota" placeholder="Nota" />
-                <button type="submit">Registrar evento</button>
-            </form>
-            <ul id="lista-eventos"></ul>
-        </section>
+        <a class="saltar" href="#contenido">Ir al contenido</a>
+        <header class="hero">
+            <div class="hero__inner">
+                <div class="hero__texto">
+                    <h1>Huerto Urbano Virtual</h1>
+                    <p>Registra tus plantas y lleva un historial de sus cuidados.</p>
+                </div>
+            </div>
+        </header>
+        <main id="contenido">
+            <section aria-labelledby="plantas-titulo">
+                <h2 id="plantas-titulo">Mis plantas</h2>
+                <ul id="lista" class="plantas"></ul>
+            </section>
+            <section id="nueva" aria-labelledby="nueva-titulo">
+                <h2 id="nueva-titulo">Agregar planta</h2>
+                <form id="form-planta" class="formulario">
+                    <div class="campo campo--ancho">
+                        <label for="nombre">Nombre de la planta</label>
+                        <input id="nombre" name="nombre" placeholder="Por ejemplo, Albahaca" required />
+                    </div>
+                    <div class="campo">
+                        <label for="especie">Especie</label>
+                        <input id="especie" name="especie" placeholder="Opcional" />
+                    </div>
+                    <div class="campo">
+                        <label for="fecha-siembra">Fecha de siembra</label>
+                        <div class="fecha-control">
+                            <input id="fecha-siembra" name="fecha_siembra" type="date" required />
+                            <span class="fecha-placeholder" aria-hidden="true">dd/mm/aaaa</span>
+                        </div>
+                    </div>
+                    <div class="acciones campo--ancho">
+                        <button class="boton-principal" type="submit">Agregar planta</button>
+                        <button class="boton-texto" type="button" id="cancelar" hidden>Cancelar edición</button>
+                    </div>
+                </form>
+            </section>
+            <section id="historial" aria-labelledby="historial-titulo" hidden>
+                <h2 id="historial-titulo">Historial</h2>
+                <form id="form-evento" class="formulario">
+                    <div class="campo">
+                        <label for="tipo-evento">Tipo de evento</label>
+                        <select id="tipo-evento" name="tipo">
+                            <option value="riego">Riego</option>
+                            <option value="crecimiento">Crecimiento</option>
+                            <option value="plaga">Plaga</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="fecha-evento">Fecha</label>
+                        <div class="fecha-control">
+                            <input id="fecha-evento" name="fecha" type="date" required />
+                            <span class="fecha-placeholder" aria-hidden="true">dd/mm/aaaa</span>
+                        </div>
+                    </div>
+                    <div class="campo campo--ancho">
+                        <label for="nota-evento">Nota</label>
+                        <input id="nota-evento" name="nota" placeholder="Detalles del evento" />
+                    </div>
+                    <button class="boton-principal" type="submit">Registrar evento</button>
+                </form>
+                <ul id="lista-eventos" class="plantas"></ul>
+            </section>
+        </main>
+        <footer>
+            <p>Las plantas y sus historiales se guardan en este navegador.</p>
+        </footer>
     `;
 
     const form = document.querySelector<HTMLFormElement>('#form-planta')!;
@@ -59,10 +105,16 @@ async function main() {
         lista.innerHTML = filas
             .map(([id, nombre, especie, fecha]) => `
                 <li>
-                    ${nombre} (${especie ?? ''}) - ${fecha}
-                    <button class="historial" data-id="${id}">Historial</button>
-                    <button class="editar" data-id="${id}">Editar</button>
-                    <button class="eliminar" data-id="${id}">Eliminar</button>
+                    <div>
+                        <h3>${nombre}</h3>
+                        <em>${especie ?? ''}</em>
+                        <span class="plantas__fecha">Sembrada el ${fecha}</span>
+                    </div>
+                    <div class="acciones">
+                        <button class="boton-texto historial" data-id="${id}">Ver historial</button>
+                        <button class="boton-texto editar" data-id="${id}">Editar</button>
+                        <button class="boton-texto peligro eliminar" data-id="${id}">Eliminar</button>
+                    </div>
                 </li>`)
             .join('');
     }
