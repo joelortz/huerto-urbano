@@ -11,9 +11,18 @@ Simulador web interactivo para registrar y dar seguimiento al crecimiento de las
 ## Características principales
 
 - Gestión de plantas: crear, consultar, editar y eliminar plantas.
+- Estado de riego: cada planta muestra cuánto tiempo pasó desde su último riego, con un aviso cuando necesita agua.
+- Riego rápido: el botón "Regar hoy" registra un riego con la fecha de hoy en un solo clic.
 - Registro de eventos: añadir fechas y notas sobre riegos, crecimiento o plagas para cada planta.
 - Persistencia de datos: utiliza SQLite mediante `sql.js` en el navegador y guarda la base de datos en `localStorage` para conservar los datos al recargar la página.
 - Interfaz responsiva y fácil de usar.
+
+## Uso
+
+1. Agrega una planta con su nombre, especie y fecha de siembra.
+2. Pulsa "Regar hoy" cada vez que riegues la planta.
+3. Pulsa "Historial" para ver y registrar riegos, crecimiento o plagas con fecha y nota.
+4. Pulsa "Editar" para cambiar los datos de la planta, o "Eliminar" para quitarla junto con su historial.
 
 ## Tecnologías
 
