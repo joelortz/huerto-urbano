@@ -13,7 +13,8 @@ function mostrarMensaje(texto: string): void {
     if (!mensaje) {
         mensaje = document.createElement('p');
         mensaje.dataset.mensajeError = 'true';
-        mensaje.setAttribute('role', 'alert');
+        mensaje.setAttribute('role', 'status');
+        mensaje.setAttribute('aria-live', 'polite');
         app.prepend(mensaje);
     }
     mensaje.textContent = texto;
@@ -137,6 +138,36 @@ async function main() {
         return boton;
     }
 
+    function calcularDiasDesdeFecha(fechaStr: string): number {
+        const ahora = new Date();
+        const hoyUTC = Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+        const partes = fechaStr.split('T')[0].split('-').map(Number);
+        const fechaUTC = Date.UTC(partes[0], partes[1] - 1, partes[2]);
+        const msPorDia = 1000 * 60 * 60 * 24;
+        return Math.floor((hoyUTC - fechaUTC) / msPorDia);
+    }
+
+    function obtenerEstadoRiego(plantaId: SqlValue): { texto: string; necesitaAgua: boolean } {
+        const filas = consultar(
+            "SELECT fecha FROM eventos WHERE planta_id = ? AND tipo = 'riego' ORDER BY fecha DESC LIMIT 1",
+            [plantaId]
+        );
+
+        if (filas.length === 0 || !filas[0][0]) {
+            return { texto: 'Sin riegos registrados', necesitaAgua: false };
+        }
+
+        const dias = calcularDiasDesdeFecha(String(filas[0][0]));
+        if (dias <= 0) {
+            return { texto: 'Riego hoy', necesitaAgua: false };
+        }
+        if (dias <= 3) {
+            const unidad = dias === 1 ? 'día' : 'días';
+            return { texto: `Riego hace ${dias} ${unidad}`, necesitaAgua: false };
+        }
+        return { texto: 'Necesita agua', necesitaAgua: true };
+    }
+
     function renderLista() {
         const filas = consultar('SELECT id, nombre, especie, fecha_siembra FROM plantas');
         lista.replaceChildren();
@@ -160,11 +191,20 @@ async function main() {
             fechaElemento.className = 'plantas__fecha';
             fechaElemento.textContent = `Sembrada el ${String(fecha)}`;
 
-            detalles.append(titulo, especieElemento, fechaElemento);
+            const estadoRiego = document.createElement('span');
+            estadoRiego.className = 'estado-riego';
+            const { texto, necesitaAgua } = obtenerEstadoRiego(id as SqlValue);
+            estadoRiego.textContent = texto;
+            if (necesitaAgua) {
+                estadoRiego.classList.add('necesita-agua', 'alerta');
+            }
+
+            detalles.append(titulo, especieElemento, fechaElemento, estadoRiego);
 
             const acciones = document.createElement('div');
             acciones.className = 'acciones';
             acciones.append(
+                crearBoton('Regar hoy', 'regar', id),
                 crearBoton('Ver historial', 'historial', id),
                 crearBoton('Editar', 'editar', id),
                 crearBoton('Eliminar', 'peligro eliminar', id)
@@ -299,6 +339,7 @@ async function main() {
             limpiarMensaje();
             formEvento.reset();
             renderEventos();
+            renderLista();
         } catch (error) {
             console.error('No se pudo registrar el evento.', error);
             mostrarMensaje('No se pudo registrar el evento. Inténtalo de nuevo.');
@@ -310,6 +351,31 @@ async function main() {
             const boton = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
             if (!boton) return;
             const id = Number(boton.dataset.id);
+
+            if (boton.classList.contains('regar')) {
+                const [planta] = consultar('SELECT nombre FROM plantas WHERE id = ?', [id]);
+                if (!planta) throw new Error('No se encontró la planta para registrar el riego.');
+
+                const hoy = new Date();
+                const fecha = [
+                    hoy.getFullYear(),
+                    String(hoy.getMonth() + 1).padStart(2, '0'),
+                    String(hoy.getDate()).padStart(2, '0'),
+                ].join('-');
+                db.run(
+                    'INSERT INTO eventos (planta_id, tipo, fecha, nota) VALUES (?, ?, ?, ?)',
+                    [id, 'riego', fecha, '']
+                );
+
+                if (!guardarDB()) {
+                    mostrarMensaje('El cambio no se guardó en este navegador.');
+                    return;
+                }
+
+                limpiarMensaje();
+                renderLista();
+                mostrarMensaje(`Riego registrado en ${String(planta[0])}.`);
+            }
 
             if (boton.classList.contains('historial')) {
                 abrirHistorial(id);

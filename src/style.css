@@ -371,6 +371,17 @@ main section h2::before {
     font-size: 0.875rem;
 }
 
+.estado-riego {
+    display: block;
+    color: var(--tenue);
+    font-size: 0.875rem;
+}
+
+.estado-riego.necesita-agua,
+.estado-riego.alerta {
+    color: var(--barro);
+}
+
 .acciones {
     display: flex;
     flex-wrap: wrap;
@@ -393,6 +404,10 @@ main section h2::before {
     background: #edf4e9;
     color: var(--hoja-oscura);
     transform: translateY(-1px);
+}
+
+.boton-texto.regar {
+    color: var(--ocre);
 }
 
 .boton-texto.peligro {
